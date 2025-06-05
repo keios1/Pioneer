@@ -6,24 +6,24 @@ public class MarinerAI : MonoBehaviour
 {
     public enum MarinerState { Wandering, Idle, Attacking }
 
-    // --- 상태 ---
+    // 상태 
     private MarinerState currentState = MarinerState.Wandering;
 
-    // --- 공통 변수 ---
+    // 공통 변수 
     public LayerMask targetLayer;
     public float detectionRange = 3f;
     public float attackInterval = 0.5f;
     private float attackCooldown = 0f;
     private Transform target;
 
-    // --- 낮 행동 변수 ---
+    // 낮 행동 변수
     public int marinerId;
     private bool isRepairing = false;
     private DefenseObject targetRepairObject;
     private int repairAmount = 30;
     private bool isSecondPriorityStarted = false;
 
-    // --- 밤 행동 변수 ---
+    // 밤 행동 변수
     private float speed = 1f;
     private float moveDuration = 2f;
     private float idleDuration = 4f;
@@ -109,7 +109,7 @@ public class MarinerAI : MonoBehaviour
             {
                 Debug.Log("승무원 수리 중");
                 isRepairing = true;
-                StartCoroutine(RepairProcess());
+                StartCoroutine(MoveToRepairObject(targetRepairObject.transform.position));
             }
             Debug.Log($"Mariner {marinerId} 수리 대상: {targetRepairObject.name}, HP: {targetRepairObject.currentHP}/{targetRepairObject.maxHP}");
         }
@@ -122,6 +122,13 @@ public class MarinerAI : MonoBehaviour
                 StartCoroutine(StartSecondPriorityAction());
             }
         }
+    }
+
+    private IEnumerator MoveToRepairObject(Vector3 targetPosition)
+    {
+        yield return StartCoroutine(MoveToTarget(targetPosition, 2f));
+
+        StartCoroutine(RepairProcess());
     }
 
     private IEnumerator RepairProcess()
@@ -335,6 +342,16 @@ public class MarinerAI : MonoBehaviour
         foreach (var hit in hits)
         {
             Debug.Log($"{hit.name} 공격 범위 내");
+
+            MarinerStatus marinerStatus = hit.GetComponent<MarinerStatus>();
+            if (marinerStatus != null)
+            {
+                int damage = marinerStatus.attackPower; 
+                marinerStatus.currentHP -= damage; 
+                Debug.Log($"{hit.name}에게 {damage}의 데미지를 입혔습니다.");
+
+                marinerStatus.UpdateStatus();
+            }
         }
 
         currentState = MarinerState.Wandering;
