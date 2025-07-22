@@ -7,7 +7,7 @@ public class MarinerStatus : MonoBehaviour
 {
     public int maxHP = 70;
     public int currentHP;
-    public int attackPower = 6; // ±âº» °ø°Ý·ÂÀº 6
+    public int attackPower = 6;
 
     public bool IsDead = false;
     public bool IsConfused = false;
@@ -15,6 +15,12 @@ public class MarinerStatus : MonoBehaviour
     private void Start()
     {
         currentHP = maxHP;
+    }
+
+    public void TakeDamage(int damage)   
+    {
+        currentHP -= damage;
+        UpdateStatus();
     }
 
     public void UpdateStatus()
@@ -28,7 +34,7 @@ public class MarinerStatus : MonoBehaviour
     public void Die()
     {
         IsDead = true;
-        Debug.Log("½Â¹«¿ø »ç¸Á");
+        Debug.Log($"{gameObject.name} ½Â¹«¿ø »ç¸Á");
         Destroy(gameObject);
     }
 }
