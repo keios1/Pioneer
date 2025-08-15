@@ -63,7 +63,6 @@ public class MarinerBase : CreatureBase
 
     protected virtual void Wander() // 배회
     {
-        // NavMesh를 사용한 배회
         if (agent != null && agent.isOnNavMesh)
         {
             if (!agent.hasPath || agent.remainingDistance < 0.5f)
@@ -73,7 +72,6 @@ public class MarinerBase : CreatureBase
         }
         else
         {
-            // 기존 방식 (NavMesh 없을 때 fallback)
             transform.position += moveDirection * speed * Time.deltaTime;
         }
 
@@ -87,7 +85,6 @@ public class MarinerBase : CreatureBase
 
     protected virtual void Idle()
     {
-        // Idle 상태에서는 NavMesh 정지
         if (agent != null && agent.isOnNavMesh)
         {
             agent.ResetPath();
@@ -244,7 +241,6 @@ public class MarinerBase : CreatureBase
 
         float distanceToTarget = Vector3.Distance(transform.position, target.position);
 
-        // 공격 범위 내에 있고 쿨다운이 끝났으면 공격
         if (distanceToTarget <= attackRange && GetAttackCooldown() <= 0f)
         {
             if (IsTargetInFOV() && attackRoutine == null)
@@ -254,7 +250,6 @@ public class MarinerBase : CreatureBase
         }
         else
         {
-            // NavMesh를 사용한 추격
             ChaseTarget();
         }
     }

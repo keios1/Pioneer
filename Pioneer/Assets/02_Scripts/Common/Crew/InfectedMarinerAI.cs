@@ -179,16 +179,23 @@ public class InfectedMarinerAI : MarinerBase, IBegin
     /// </summary>
     private void ChangeToZombieAI()
     {
-        Debug.Log("좀비 AI전환");
+        Debug.Log($"감염된 승무원 {marinerId}: 좀비 AI로 전환");
 
-        if (GetComponent<ZombieMarinerAI>() == null)
+        ZombieMarinerAI zombieComponent = GetComponent<ZombieMarinerAI>();
+
+        if (zombieComponent != null)
         {
-            ZombieMarinerAI zombieAI = gameObject.AddComponent<ZombieMarinerAI>();
-            zombieAI.marinerId = this.marinerId;
-        }
+            this.enabled = false;              // 현재 AI 비활성화
+            zombieComponent.enabled = true;    // 좀비 AI 활성화
 
-        Destroy(this);
+            Debug.Log($"감염된 승무원 {marinerId}: 감염 AI 비활성화, 좀비 AI 활성화");
+        }
+        else
+        {
+            Debug.LogError($"감염된 승무원 {marinerId}에 ZombieMarinerAI 컴포넌트가 없습니다!");
+        }
     }
+
 
     /// <summary>
     /// 감염된 승무원은 30% 수리 성공률 (70% 실패)

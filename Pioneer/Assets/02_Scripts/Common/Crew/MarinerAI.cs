@@ -102,11 +102,6 @@ public class MarinerAI : MarinerBase, IBegin
         return marinerId;
     }
 
-    protected override string GetCrewTypeName()
-    {
-        return "승무원";
-    }
-
     protected override float GetAttackCooldown()
     {
         return attackCooldown;
@@ -177,13 +172,13 @@ public class MarinerAI : MarinerBase, IBegin
 
         foreach (var hit in hits)
         {
-            Debug.Log($"승무원이 {hit.name} 공격 범위 내 감지");
+            Debug.Log("승무원이 공격 범위 내 감지");
 
             CommonBase targetBase = hit.GetComponent<CommonBase>();
             if (targetBase != null)
             {
                 targetBase.TakeDamage(attackDamage);
-                Debug.Log($"승무원이 {hit.name}에게 {attackDamage}의 데미지를 입혔습니다.");
+                Debug.Log($"승무원이 {hit.name}에게 데미지를 입혔습니다.");
             }
         }
     }
@@ -207,21 +202,21 @@ public class MarinerAI : MarinerBase, IBegin
             {
                 MarinerManager.Instance.OccupySpawner(index);
                 chosenIndex = index;
-                Debug.Log($"승무원 {marinerId}: 스포너 {index} 점유 성공");
+                Debug.Log($"승무원 {marinerId}: 스포너 점유 성공");
                 break;
             }
             else // 점유중
             {
                 triedIndexes.Add(index);
                 float waitTime = Random.Range(0f, 1f);
-                Debug.Log($"승무원 {marinerId}: 스포너 {index}가 점유 중이라 랜덤 시간 후 다시 탐색");
+                Debug.Log($"승무원 스포너 점유 중이라 랜덤 시간 후 다시 탐색");
                 yield return new WaitForSeconds(waitTime);
             }
         }
 
         if (chosenIndex == -1) // 예외 처리
         {
-            Debug.LogWarning($"승무원 {marinerId}: 모든 스포너가 사용중임으로 기본 위치로 이동");
+            Debug.LogWarning("모든 스포너가 사용중임으로 기본 위치로 이동");
             chosenIndex = fallbackIndex; // 첫 위치로 이동
         }
 

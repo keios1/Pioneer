@@ -209,6 +209,4 @@ public class ZombieMarinerAI : MarinerBase, IBegin
         yield return new WaitForSeconds(1f);
         EnterWanderingState();
     }
-
-
 }

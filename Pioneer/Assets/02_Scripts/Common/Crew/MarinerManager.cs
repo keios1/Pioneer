@@ -24,6 +24,43 @@ public class MarinerManager : MonoBehaviour
             Destroy(gameObject);
 
         UpdateRepairTargets();
+        InitializeMarinerComponents();
+    }
+
+    /// <summary>
+    /// 모든 승무원에게 미리 감염된 승무원 및 좀비 컴포넌트를 붙이고 비활성화
+    /// </summary>
+    private void InitializeMarinerComponents()
+    {
+        MarinerAI[] mariners = FindObjectsOfType<MarinerAI>();
+
+        foreach (var mariner in mariners)
+        {
+            // InfectedMarinerAI가 없으면 추가
+            InfectedMarinerAI infectedComponent = mariner.GetComponent<InfectedMarinerAI>();
+            if (infectedComponent == null)
+            {
+                infectedComponent = mariner.gameObject.AddComponent<InfectedMarinerAI>();
+            }
+
+            // ZombieMarinerAI가 없으면 추가
+            ZombieMarinerAI zombieComponent = mariner.GetComponent<ZombieMarinerAI>();
+            if (zombieComponent == null)
+            {
+                zombieComponent = mariner.gameObject.AddComponent<ZombieMarinerAI>();
+            }
+
+            // 각 컴포넌트 초기 설정
+            infectedComponent.marinerId = mariner.marinerId;
+            infectedComponent.enabled = false; // 비활
+                                               //
+                                               // 성화
+
+            zombieComponent.marinerId = mariner.marinerId;
+            zombieComponent.enabled = false; // 비활성화
+
+            Debug.Log($"승무원 {mariner.marinerId}: 모든 AI 컴포넌트 준비 완료 (비활성화 상태)");
+        }
     }
 
     private void Update()
@@ -46,7 +83,7 @@ public class MarinerManager : MonoBehaviour
 
         foreach (var mariner in marinerQueue)
         {
-            if (mariner != null)
+            if (mariner != null && mariner.enabled) // 아직 감염되지 않은 승무원만
             {
                 InfectMariner(mariner);
                 yield return new WaitForSeconds(infectionInterval);
@@ -57,20 +94,31 @@ public class MarinerManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 개별 승무원을 감염시키는 함수
+    /// 개별 승무원을 감염시키는 함수 (스크립트 활성화/비활성화로 변경)
     /// </summary>
     private void InfectMariner(MarinerAI mariner)
     {
-        if (mariner == null) return;
+        if (mariner == null || !mariner.enabled) return;
 
-        Debug.Log("감염 발생");
+        Debug.Log($"승무원 {mariner.marinerId} 감염 발생");
 
-        int id = mariner.marinerId;
-        GameObject go = mariner.gameObject;
+        // 감염된 승무원 컴포넌트 가져오기
+        InfectedMarinerAI infectedComponent = mariner.GetComponent<InfectedMarinerAI>();
 
-        Destroy(mariner);
-        InfectedMarinerAI infected = go.AddComponent<InfectedMarinerAI>();
-        infected.marinerId = id;
+        if (infectedComponent != null)
+        {
+            // 기존 승무원 AI 비활성화
+            mariner.enabled = false;
+
+            // 감염된 승무원 AI 활성화
+            infectedComponent.enabled = true;
+
+            Debug.Log($"승무원 {mariner.marinerId}: 정상 AI 비활성화, 감염 AI 활성화");
+        }
+        else
+        {
+            Debug.LogError($"승무원 {mariner.marinerId}에 InfectedMarinerAI 컴포넌트가 없습니다!");
+        }
     }
 
     /// <summary>
@@ -206,4 +254,5 @@ public class MarinerManager : MonoBehaviour
         if (repairOccupancy.ContainsKey(id))
             repairOccupancy.Remove(id);
     }
+
 }
