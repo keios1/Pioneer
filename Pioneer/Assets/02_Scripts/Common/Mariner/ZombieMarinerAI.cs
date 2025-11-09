@@ -128,7 +128,11 @@ public class ZombieMarinerAI : MarinerBase, IBegin
         }
 
         if (agent != null && agent.isOnNavMesh)
+        {
             agent.ResetPath();
+            agent.isStopped = true; 
+        }
+
 
         LookAtTarget();
 
@@ -136,6 +140,7 @@ public class ZombieMarinerAI : MarinerBase, IBegin
         anim?.AimAtTarget(target.position, transform);  // 방향 스냅
         anim?.PlayZombieAttackOnce();
 
+        yield return new WaitForSeconds(1f);
         // 히트박스 선딜 표시
         if (attackRangeObject != null)
         {
@@ -150,9 +155,11 @@ public class ZombieMarinerAI : MarinerBase, IBegin
             attackRangeObject.SetActive(false);
             isShowingAttackBox = false;
         }
-
         PerformZombieAttack();
         attackCooldown = attackInterval;
+
+        if (agent != null && agent.isOnNavMesh)
+            agent.isStopped = false;
 
         // 타겟 생존 여부 확인
         if (target != null)
