@@ -106,8 +106,8 @@ public class MarinerAnimControll : MonoBehaviour
         animator.SetFloat(H_DirZ, aimDir.y);
         animator.SetFloat(H_Speed, 0f);
 
-        if (sprite && Mathf.Abs(aimDir.x) > Mathf.Abs(aimDir.y))
-            sprite.flipX = (aimDir.x < 0);
+        /*if (sprite && Mathf.Abs(aimDir.x) > Mathf.Abs(aimDir.y))
+            sprite.flipX = (aimDir.x < 0);*/
     }
 
     public void ClearAim() => aimOverride = false;
@@ -142,8 +142,8 @@ public class MarinerAnimControll : MonoBehaviour
         animator.SetFloat(H_DirZ, aimDir.y);
         animator.SetFloat(H_Speed, 0f);
 
-        if (sprite && Mathf.Abs(aimDir.x) > Mathf.Abs(aimDir.y))
-            sprite.flipX = (aimDir.x < 0);
+        /*if (sprite && Mathf.Abs(aimDir.x) > Mathf.Abs(aimDir.y))
+            sprite.flipX = (aimDir.x < 0);*/
 
         // 상태 진입
         animator.ResetTrigger(H_FishingTrigger);
@@ -183,7 +183,7 @@ public class MarinerAnimControll : MonoBehaviour
         animator.SetFloat(H_DirX, n.x, damp, Time.deltaTime);
         animator.SetFloat(H_DirZ, n.y, damp, Time.deltaTime);
 
-        if (sprite && speed >= idleThreshold && Mathf.Abs(n.x) > Mathf.Abs(n.y))
-            sprite.flipX = (n.x < 0f);
+        /*if (sprite && speed >= idleThreshold && Mathf.Abs(n.x) > Mathf.Abs(n.y))
+            sprite.flipX = (n.x < 0f);*/
     }
 }
