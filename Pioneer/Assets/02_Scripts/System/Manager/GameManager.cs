@@ -4,6 +4,7 @@ using System.ComponentModel;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
+using static AudioManager;
 
 #region 임시 Stats
 public class EnemyStats : MonoBehaviour
@@ -121,6 +122,8 @@ public class GameManager : MonoBehaviour, IBegin
 
         Debug.Log($">> GameManager.Start()");
 
+        AudioManager.instance.PlayBgm(AudioManager.BGM.Morning);
+
         if (InventoryUiMain.instance != null)
             InventoryUiMain.instance.Start();
         else
@@ -165,6 +168,9 @@ public class GameManager : MonoBehaviour, IBegin
                 AudioManager.instance.PlaySfx(AudioManager.SFX.ToNight);
 
             Debug.Log($"밤이 되었습니다. (Day {currentDay})");
+
+            AudioManager.instance.PlayBgm(AudioManager.BGM.Night);
+
             IsDaytime = false;
             OnNightStart();
         }
@@ -173,6 +179,9 @@ public class GameManager : MonoBehaviour, IBegin
             // 밤 -> 낮 전환
             IsDaytime = true;
             currentDay++;
+
+            AudioManager.instance.PlayBgm(AudioManager.BGM.Morning);
+
             OnNightEnd();
             Debug.Log($"아침이 되었습니다. (Day {currentDay})");
         }

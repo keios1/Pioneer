@@ -46,6 +46,9 @@ public class OceanEventSiren : OceanEventBase
         target.StopAllCoroutines();
         target.Agent.isStopped = false;
 
+        if (AudioManager.instance != null)
+            AudioManager.instance.PlaySfx(AudioManager.SFX.LaughSaren);
+
         Debug.Log($"[SIREN] {target.name} 매혹 시작");
 
         float charmDuration = 10f;
